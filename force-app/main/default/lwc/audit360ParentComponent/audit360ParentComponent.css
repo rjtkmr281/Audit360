@@ -1,0 +1,179 @@
+/* ============================================================
+   Centralized CSS for Audit360 Components
+   ============================================================ */
+
+/* Root Variables */
+:host {
+    --green      : #1a8a5a;
+    --dark-blue  : #1e2d6b;
+    --orange     : #c8610a;
+    --teal-header: #2d5fa0;
+    --teal-light : #e8f7f2;
+    --teal-border: #4caf8e;
+    --border-col : #b7c8e8;
+    --text-dark  : #16325c;
+    --text-gray  : #54698d;
+    --badge-bg   : #deeeff;
+    --badge-text : #3a6fa4;
+    --white      : #ffffff;
+    --bg-page    : #f4f6f9;
+    --shadow-sm  : 0 1px 4px rgba(0,0,0,0.10);
+    --shadow-md  : 0 2px 8px rgba(0,0,0,0.14);
+    --radius     : 6px;
+    display: block;
+}
+
+/* Container */
+.audit360-container {
+    position: relative;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    font-size: 13px;
+    background: var(--bg-page);
+    padding: 16px;
+    min-height: 400px;
+}
+
+.container {
+    border: 1px solid var(--border-col);
+    border-radius: var(--radius);
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+}
+
+.header {
+    padding: 12px 16px;
+    background: var(--teal-header);
+    color: var(--white);
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.logo {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+
+
+/* Buttons */
+.btn-export {
+    background: var(--teal-header);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+.btn-export:hover { background: #22805e; }
+
+/* Table Styles */
+.table-container {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 16px;
+    position: relative;
+    min-height: 60px;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table thead tr {
+    background: var(--teal-header);
+}
+
+.history-table thead th {
+    color: var(--white);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 12px 16px;
+    text-align: left;
+    letter-spacing: 0.02em;
+}
+
+.history-table tbody tr {
+    border-bottom: 1px solid var(--border-col);
+    transition: background 0.12s;
+}
+
+.history-table tbody tr:hover {
+    background: var(--teal-light);
+}
+
+.history-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.history-table tbody td {
+    padding: 11px 16px;
+    vertical-align: middle;
+    font-size: 13px;
+    color: var(--text-dark);
+}
+
+/* Value styles */
+.old-value {
+    color: #c23934;
+    font-weight: 500;
+}
+
+.new-value {
+    color: var(--green);
+    font-weight: 500;
+}
+
+.empty-dash {
+    color: var(--text-gray);
+    font-size: 15px;
+}
+
+.no-data {
+    text-align: center;
+    color: var(--text-gray);
+    padding: 32px 16px !important;
+    font-size: 13px;
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 9999;
+    box-shadow: var(--shadow-md);
+    animation: fadeIn 0.3s ease;
+}
+
+.toast-success { background: #dff0d8; color: #3c763d; border: 1px solid #b2d8b2; }
+.toast-error   { background: #f2dede; color: #a94442; border: 1px solid #ebccd1; }
+.toast-info    { background: #d9edf7; color: #31708f; border: 1px solid #bce8f1; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Tab styles */
+lightning-tabset {
+    --slds-c-tabs-item-color-active: var(--teal-header);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .audit360-container {
+        padding: 8px;
+    }
+   
+}

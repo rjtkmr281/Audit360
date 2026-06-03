@@ -1,0 +1,95 @@
+<template>
+    <!-- Modal -->
+    <template if:true={showModal}>
+
+        <section role="dialog"
+            tabindex="-1"
+            class="slds-modal slds-fade-in-open custom-modal">
+
+            <div class="slds-modal__container">
+
+                <!-- Close Icon -->
+                <lightning-button-icon
+                    icon-name="utility:close"
+                    alternative-text="Close"
+                    variant="bare-inverse"
+                    onclick={closeModal}
+                    class="close-icon">
+                </lightning-button-icon>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <!-- Rocket Icon -->
+                    <div class="icon-box">
+                        🚀
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="title">
+                        Upgrade to Pro Version
+                    </h1>
+
+                    <!-- Main Message -->
+                    <p class="message">
+                        Unlock advanced admin features, premium tools,
+                        smart automation, and powerful controls with
+                        the next Pro Version.
+                    </p>
+
+                    <!-- Secondary Message -->
+                    <p class="message2">
+                        Please connect with your Admin to activate Pro access
+                        and explore all premium capabilities of the application.
+                    </p>
+
+                    <!-- Feature Section -->
+                    <div class="feature-box">
+
+                        <div class="feature-item">
+                            ✔ Advanced Analytics
+                        </div>
+
+                        <div class="feature-item">
+                            ✔ Premium Automation
+                        </div>
+
+                        <div class="feature-item">
+                            ✔ Smart User Management
+                        </div>
+
+                        <div class="feature-item">
+                            ✔ Secure Admin Controls
+                        </div>
+
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="btn-section">
+
+                        <lightning-button
+                            label="Contact Admin"
+                            variant="brand"
+                            class="contact-btn">
+                        </lightning-button>
+
+                        <lightning-button
+                            label="Maybe Later"
+                            variant="neutral"
+                            onclick={closeModal}>
+                        </lightning-button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Background -->
+        <div class="slds-backdrop slds-backdrop_open"></div>
+
+    </template>
+
+</template>

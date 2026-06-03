@@ -1,0 +1,136 @@
+<template>
+    <div class="outer-wrap">
+        <!-- <div style="border: solid gray 11px;border-radius: 14px;"> -->
+        <lightning-layout class="kpi-container" multiple-rows>
+            <template for:each={kpiList} for:item="kpi">
+                <lightning-layout-item key={kpi.id} flexibility="auto" class="slds-p-around_xx-small">
+                    <c-audit360-k-p-i kpi-number={kpi.number} color={kpi.color} kpi-label={kpi.label} kpi-subject={kpi.subject}>
+                    </c-audit360-k-p-i>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+        <div class="folder-tabs-section">
+                <button class={allClass}
+                    data-name="All Async Jobs" onclick={handleclick}>All Async Jobs
+                </button>
+                 <button class={batchClass}
+                    data-name="Batch Apex" onclick={handleclick}>Batch Apex
+                </button>
+                <button class={scheduledClass}
+                    data-name="Scheduled" onclick={handleclick}>Scheduled
+                </button>
+                <button class={queueableClass}
+                    data-name="Queueable" onclick={handleclick}>Queueable
+                </button>
+                <button class={failedClass}
+                    data-name="Failed Only" onclick={handleclick}>Failed Only
+                </button>
+            </div>
+            <div class="filter-container">
+
+
+                <div class="slds-col slds-size_1-of-3">
+                    <lightning-input type="search"  placeholder="Search by Class Name"
+                        onchange={handleSearch}>
+                    </lightning-input>
+                </div>
+
+                <div class="slds-col slds-size_1-of-4 slds-p-left_small">
+                    <lightning-input  type="date" placeholder="From Date" onchange={handleFromDate} >
+                    </lightning-input>
+                </div>
+
+                <!-- To Date -->
+                <div class="slds-col slds-size_1-of-4 slds-p-left_small">
+                    <lightning-input type="date" placeholder="To Date" onchange={handleToDate}>
+                    </lightning-input>
+                </div>
+
+                <!-- Search Button -->
+                <div class="slds-col filter-actions">
+                    <!-- <lightning-button variant="destructive" label="Apply Filter" onclick={applyFilter}>
+                    </lightning-button> -->
+                    <button class="filter-tab"
+                   onclick={applyFilter}>Apply Filter
+                </button>
+                    <!-- <lightning-button style="margin-left:5px;" variant="neutral" label="Reset" onclick={handleReset}>
+                    </lightning-button> -->
+                      <button class="filter-tab"
+                   onclick={handleReset}>Reset
+                </button>
+                </div>
+
+            </div>
+        <lightning-card>
+            <!-- Buttons -->
+            <!-- <div class="slds-m-bottom_medium"> -->
+                <!-- <lightning-button variant="Brand" class={batchClass} style="margin-left:5px; " label="Batch Apex"
+                    data-name="Batch Apex" onclick={handleclick}>
+                </lightning-button>
+                <lightning-button variant="Brand" class={scheduledClass} style="margin-left:10px;" label="Scheduled"
+                    data-name="Scheduled" onclick={handleclick}>
+                </lightning-button>
+                <lightning-button variant="Brand" class={queueableClass} style="margin-left:10px;" label="Queueable"
+                    data-name="Queueable" onclick={handleclick}>
+                </lightning-button>
+                <lightning-button variant="Brand" class={failedClass} style="margin-left:10px;" label="Failed Only"
+                    data-name="Failed Only" onclick={handleclick}>
+                </lightning-button> -->
+             <template if:true={isLoading}>
+                <c-audit360-spinner></c-audit360-spinner>
+            </template>
+            
+            <!-- Data Table -->
+            <lightning-datatable key-field="Id" data={pagedJobList} columns={columns} onrowaction={handleRowAction}>
+            </lightning-datatable>
+            <div class="pag-bar">
+                <button class="pag-btn" disabled={isFirstPage} onclick={handlePrev}>Prev</button>
+                <span class="pag-info">{pageInfo}</span>
+                <button class="pag-btn" disabled={isLastPage} onclick={handleNext}>Next</button>
+            </div>
+
+           
+        </lightning-card>
+           <!-- modal -->
+        <c-audit360-pro-version-modal show-modal={showModal} onclosemodal={handleCloseModal}>
+        </c-audit360-pro-version-modal>
+        <!-- </div> -->
+        <!--  Reschedule Modal -->
+        <template if:true={isModalOpen}>
+            <section role="dialog" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+
+                    <!-- Header -->
+                    <header class="slds-modal__header">
+                        <h2 class="slds-text-heading_medium">Reschedule Job</h2>
+                    </header>
+
+                    <!-- Body -->
+                    <div class="slds-modal__content slds-p-around_medium">
+
+                        <lightning-input label="Job Name" value={selectedClassName} disabled>
+                        </lightning-input>
+
+                        <lightning-input type="datetime" label="Schedule Date & Time" onchange={handleDateTimeChange}>
+                        </lightning-input>
+
+                    </div>
+
+                    <!-- Footer -->
+                    <footer class="slds-modal__footer">
+
+                        <lightning-button label="Cancel" onclick={closeModal}>
+                        </lightning-button>
+
+                        <lightning-button variant="brand" label="Schedule" onclick={scheduleJob}>
+                        </lightning-button>
+
+                    </footer>
+
+                </div>
+            </section>
+
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+</template>

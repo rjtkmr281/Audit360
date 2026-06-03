@@ -1,0 +1,215 @@
+/* auditSetupTrail.css  — v3 */
+.kpi-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid #b7c8e8;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+
+.kpi-container lightning-layout-item {
+    flex: 1 1 180px;
+    min-width: 160px;
+    padding: 0 !important;
+}
+.outer-wrap {
+    background: #f4f6f9;
+    padding: 1rem;
+    border-radius: 10px;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    font-size: 13px;
+}
+
+/* ── KPI Tiles ────────────────────────────────────────── */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.kpi-tile {
+    background: #cde0f0;
+    border-radius: 10px;
+    padding: 18px 16px;
+    text-align: center;
+}
+.kpi-num   { font-size: 30px; font-weight: 800; line-height: 1.1; }
+.kpi-blue  { color: #1a4a8a; }
+.kpi-red   { color: #c0392b; }
+.kpi-amber { color: #9a5e00; }
+.kpi-green { color: #1e7a1e; }
+.kpi-lbl   { font-size: 12px; color: #555; margin-top: 4px; }
+.kpi-sub   { font-size: 11px; color: #888; margin-top: 2px; }
+
+/* ── Main white card ──────────────────────────────────── */
+.main-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,.1);
+}
+
+/* ── Controls bar ─────────────────────────────────────── */
+.controls-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    border: 1px solid #b7c8e8;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+
+.chip {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #2d5fa0;
+    color: #fff;
+    font-family: inherit;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.12s;
+    white-space: nowrap;
+}
+.chip:hover:not(.chip-active) {
+    background: #22805e;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.14);
+}
+.chip-active {
+    background: #1a8a5a;
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35), 0 1px 4px rgba(0,0,0,0.10);
+}
+.search-box   { margin-left: auto; }
+.search-input {
+    border: 1px solid #b7c8e8;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    background: #fff;
+    color: #16325c;
+    width: 200px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.search-input::placeholder { color: #9aa7b9; }
+.search-input:focus {
+    border-color: #4caf8e;
+    box-shadow: 0 0 0 2px rgba(76, 175, 142, 0.18);
+}
+.csv-btn {
+    background: #2d5fa0;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    transition: background 0.2s;
+}
+.csv-btn:hover { background: #22805e; }
+
+/* ── Table ────────────────────────────────────────────── */
+.audit-table   { width: 100%; border-collapse: collapse; }
+.audit-table thead tr { background: #2d5fa0; }
+.audit-table th {
+    padding: 11px 14px; font-size: 12px; font-weight: 600;
+    color: #fff; text-align: left; letter-spacing: 0.3px;
+}
+.audit-table td {
+    padding: 10px 14px; border-bottom: 1px solid #f2f2f2;
+    vertical-align: middle; color: #333;
+}
+.event-row:hover td { background: #f4f8ff; cursor: pointer; }
+.event-row:last-child td { border-bottom: none; }
+
+/* FIX 1: Date & Time column — two-line layout */
+.col-time  { white-space: nowrap; width: 120px; }
+.dt-date   { display: block; font-size: 12px; font-weight: 500; color: #333; }
+.dt-time   { display: block; font-size: 11px; color: #999; margin-top: 2px; }
+
+.col-event { max-width: 260px; }
+
+/* FIX 2: User column shows name — slightly bolder */
+.col-user  { font-size: 12px; font-weight: 500; color: #333; white-space: nowrap; }
+
+.no-data   { text-align: center; padding: 32px; color: #aaa; font-style: italic; }
+
+/* ── Section tags ─────────────────────────────────────── */
+.stag { display: inline-block; border-radius: 14px; padding: 4px 12px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+.st-email      { background: #d6eaf8; color: #1a5276; }
+.st-users      { background: #d5e8f5; color: #154360; }
+.st-flows      { background: #dde8f8; color: #1a3a6a; }
+.st-validation { background: #d9ecf5; color: #154360; }
+.st-groups     { background: #d6eaf8; color: #1a5276; }
+
+/* ── Risk badges ──────────────────────────────────────── */
+.badge      { display: inline-block; border-radius: 14px; padding: 4px 14px; font-size: 12px; font-weight: 500; min-width: 64px; text-align: center; }
+.b-critical { background: #fce8e8; color: #c0392b; border: 1px solid #f5c6c6; }
+.b-high     { background: #fdf0dd; color: #9a5e00; border: 1px solid #f5d9a8; }
+.b-medium   { background: #dbeeff; color: #1a5276; border: 1px solid #aed6f1; }
+.b-low      { background: #d5f5e3; color: #1e7a1e; border: 1px solid #a9dfbf; }
+
+/* ── View button ──────────────────────────────────────── */
+.view-btn {
+    background: #fff; border: 1.5px solid #b09393; border-radius: 6px;
+    padding: 4px 14px; font-size: 12px; cursor: pointer;
+    color: #444; font-family: inherit;
+}
+.view-btn:hover { border-color: #1a3a6a; color: #1a3a6a; }
+
+/* ── Pagination ───────────────────────────────────────── */
+.pag-bar {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; padding: 10px; background: #fafafa; border-top: 1px solid #eee;
+}
+.pag-btn {
+    border: 1px solid #ccc; background: #fff; border-radius: 6px;
+    padding: 5px 14px; font-size: 12px; cursor: pointer;
+    color: #555; font-family: inherit;
+}
+.pag-btn:hover:not([disabled]) { border-color: #1a3a6a; color: #1a3a6a; }
+.pag-btn[disabled] { opacity: 0.4; cursor: default; }
+.pag-info { font-size: 12px; color: #888; }
+
+/* ── Status bar ───────────────────────────────────────── */
+.status-bar { padding: 8px 16px; font-size: 11px; color: #1a3a6a; border-top: 1px solid #f0f0f0; }
+
+/* ── Detail slide-in panel ────────────────────────────── */
+.panel-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.35);
+    display: flex; align-items: stretch; justify-content: flex-end; z-index: 9000;
+}
+.detail-panel {
+    width: 380px; background: #fff; display: flex; flex-direction: column;
+    box-shadow: -4px 0 18px rgba(0,0,0,.14); animation: slideIn 0.2s ease;
+}
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; background: #2d5fa0;
+}
+.panel-title { color: #fff; font-size: 15px; font-weight: 600; }
+.panel-close { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; line-height: 1; }
+.panel-body  { padding: 20px; overflow-y: auto; flex: 1; }
+.pf          { margin-bottom: 16px; }
+.pf-lbl      { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: #999; margin-bottom: 5px; }
+.pf-val      { font-size: 13px; color: #222; line-height: 1.6; }
+.pf-mono     { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 12px; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; color: #333; }
+.pf-link     { font-size: 13px; color: #1a5276; font-weight: 500; }

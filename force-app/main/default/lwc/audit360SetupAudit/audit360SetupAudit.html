@@ -1,0 +1,134 @@
+<template>
+    <div class="outer-wrap">
+        <!-- ── KPI Tiles ───────────────────────────── -->
+        <lightning-layout class="kpi-container" multiple-rows>
+            <template for:each={kpiList} for:item="kpi">
+                <lightning-layout-item key={kpi.id} flexibility="auto" class="slds-p-around_xx-small">
+                    <c-audit360-k-p-i kpi-number={kpi.number} color={kpi.color} kpi-label={kpi.label}
+                        kpi-subject={kpi.subject}>
+                    </c-audit360-k-p-i>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+        <!-- ── Main Card ───────────────────────────── -->
+        <div class="controls-bar">
+            <template for:each={sectionChips} for:item="chip">
+                <button
+                        key={chip.label}
+                        class={chip.cssClass}
+                        data-section={chip.label}
+                        onclick={handleChipClick}>
+                        {chip.label}
+                    </button>
+            </template>
+            <div class="search-box">
+                <input
+                        type="text"
+                        placeholder="Search events..."
+                        value={searchTerm}
+                        onkeyup={handleSearch}
+                        class="search-input" />
+            </div>
+            <button class="csv-btn" onclick={handleCsvExport}>
+                    Export CSV ({filteredCount})
+                </button>
+        </div>
+        <div class="main-card">
+
+            <!-- Event Feed Table -->
+            <table class="audit-table">
+                <thead>
+                    <tr>
+                        <th>Date &amp; Time</th>
+                        <th>Section</th>
+                        <th>Event</th>
+                        <th>User</th>
+                        <th>Risk</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template if:true={hasRows}>
+                        <template for:each={pagedRows} for:item="row">
+                            <tr key={row.Id} class="event-row" data-id={row.Id} onclick={handleRowClick}>
+                                <td class="col-time">
+                                    <span class="dt-date">{row.formattedDate}</span>
+                                    <span class="dt-time">{row.formattedTime}</span>
+                                </td>
+                                <td>
+                                    <span class={row.sectionTagClass}>{row.Section}</span>
+                                </td>
+                                <td class="col-event">{row.Display}</td>
+                                <td class="col-user">{row.userName}</td>
+                                <td>
+                                    <span class={row.badgeClass}>{row.riskLevel}</span>
+                                </td>
+                                <td>
+                                    <button
+                                        class="view-btn"
+                                        data-id={row.Id}
+                                        onclick={handleViewClick}>
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+                    <template if:false={hasRows}>
+                        <tr>
+                            <td colspan="6" class="no-data">No events match the current filter.</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+            <div class="pag-bar">
+                <button class="pag-btn" disabled={isFirstPage} onclick={handlePrev}>← Prev</button>
+                <span class="pag-info">{pageInfo}</span>
+                <button class="pag-btn" disabled={isLastPage} onclick={handleNext}>Next →</button>
+            </div>
+            <div class="status-bar">{statusMsg}</div>
+        </div>
+        <template if:true={showPanel}>
+            <div class="panel-overlay" onclick={handleOverlayClick}>
+                <div class="detail-panel" onclick={stopProp}>
+                    <div class="panel-head">
+                        <span class="panel-title">Event Detail</span>
+                        <button class="panel-close" onclick={closePanel}>✕</button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="pf">
+                            <div class="pf-lbl">Risk</div>
+                            <span class={selectedEvent.badgeClass}>{selectedEvent.riskLevel}</span>
+                        </div>
+                        <div class="pf">
+                            <div class="pf-lbl">Date &amp; Time</div>
+                            <div class="pf-val">{selectedEvent.formattedDate} {selectedEvent.formattedTime}</div>
+                        </div>
+                        <div class="pf">
+                            <div class="pf-lbl">Section</div>
+                            <span class={selectedEvent.sectionTagClass}>{selectedEvent.Section}</span>
+                        </div>
+                        <div class="pf">
+                            <div class="pf-lbl">Action</div>
+                            <div class="pf-mono">{selectedEvent.Action}</div>
+                        </div>
+                        <div class="pf">
+                            <div class="pf-lbl">User</div>
+                            <div class="pf-link">{selectedEvent.userName}</div>
+                        </div>
+                        <div class="pf">
+                            <div class="pf-lbl">Display</div>
+                            <div class="pf-val">{selectedEvent.Display}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+    <!-- <template if:true={showModal}> -->
+        <c-audit360-pro-version-modal
+        show-modal={showModal}
+        onclosemodal={handleCloseModal}>
+    </c-audit360-pro-version-modal>
+    <!-- </template> -->
+</template>

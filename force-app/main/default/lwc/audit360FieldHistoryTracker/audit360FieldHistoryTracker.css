@@ -1,0 +1,721 @@
+/* ============================================================
+   Audit360 Field History — LWC CSS
+   ============================================================ */
+
+/* Root Variables */
+:host {
+    --green      : #1a8a5a;
+    --dark-blue  : #1e2d6b;
+    --orange     : #c8610a;
+    --teal-header: #2d5fa0;
+    --teal-light : #e8f7f2;
+    --teal-border: #4caf8e;
+    --border-col : #b7c8e8;
+    --text-dark  : #16325c;
+    --text-gray  : #54698d;
+    --badge-bg   : #deeeff;
+    --badge-text : #3a6fa4;
+    --white      : #ffffff;
+    --bg-page    : #f4f6f9;
+    --shadow-sm  : 0 1px 4px rgba(0,0,0,0.10);
+    --shadow-md  : 0 2px 8px rgba(0,0,0,0.14);
+    --radius     : 6px;
+    display: block;
+}
+
+/* Container */
+
+
+.outer-wrap {
+    background: #f4f6f9;
+    padding: 1rem;
+    border-radius: 10px;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    font-size: 13px;
+}
+
+
+.kpi-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 8px 12px;
+    background: var(--white);
+    border: 1px solid var(--border-col);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.kpi-container lightning-layout-item {
+    flex: 1 1 180px;
+    min-width: 160px;
+    padding: 0 !important;
+}
+
+/* ── Filter Bar ──────────────────────────────────────────────── */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+    background: var(--white);
+    border: 1px solid var(--border-col);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+.filter-left {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Dropdowns */
+/* .filter-dropdown {
+    position: relative;
+    border: 1px solid var(--border-col);
+    border-radius: var(--radius);
+    padding: 6px 28px 6px 10px;
+    cursor: pointer;
+    background: var(--white);
+    font-size: 13px;
+    color: var(--text-dark);
+    user-select: none;
+    min-width: 130px;
+} */
+.filter-dropdown {
+    position: relative;
+    border: 1px solid var(--border-col);
+    border-radius: var(--radius);
+    padding: 6px 28px 6px 10px;
+    cursor: pointer;
+    background: var(--white);
+    font-size: 13px;
+    color: var(--text-dark);
+    user-select: none;
+    min-width: 130px;
+}
+
+/* .filter-dropdown:hover {
+    background: var(--teal-light);
+    border-color: var(--teal-border);
+} */
+
+.filter-dropdown:hover {
+    background: var(--teal-light);
+    border-color: var(--teal-border);
+}
+
+/* .arrow {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: var(--text-gray);
+} */
+
+.arrow {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: var(--text-gray);
+}
+
+/* .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 160px;
+    background: var(--white);
+    border: 1px solid var(--border-col);
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    overflow: hidden;
+} */
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 160px;
+    max-height: 320px;           /* ← This enables scrolling */
+    overflow-y: auto;            /* Vertical scroll */
+    overflow-x: hidden;
+    background: var(--white);
+    border: 1px solid var(--border-col);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    padding: 4px 0;              /* Better spacing */
+}
+
+/* Nice scrollbar styling */
+.dropdown-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+    background-color: #a8b5d1;
+    border-radius: 3px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background-color: #7e8eb8;
+}
+
+.dropdown-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--text-dark);
+    font-size: 13px;
+    transition: background 0.15s;
+}
+
+.dropdown-item:hover {
+    background: var(--teal-light);
+    color: var(--green);
+}
+
+/* .dropdown-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--text-dark);
+    font-size: 13px;
+    transition: background 0.15s;
+}
+
+.dropdown-item:hover {
+    background: var(--teal-light);
+    color: var(--green);
+} */
+
+/* Buttons */
+.btn-tracking-config {
+    border: none;
+    background: transparent;
+    color: #0070d2;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: var(--radius);
+    transition: background 0.15s;
+}
+.btn-tracking-config:hover { background: #e8f4ff; }
+
+.btn-export {
+    background: var(--teal-header);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+.btn-export:hover { background: #22805e; }
+
+/* ── Info Banner ─────────────────────────────────────────────── */
+.info-banner {
+    background: #e6f9f2;
+    border: 1px solid var(--teal-border);
+    border-radius: var(--radius);
+    padding: 8px 14px;
+    font-size: 12.5px;
+    color: #145a3c;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.info-icon {
+    font-size: 15px;
+    color: var(--teal-header);
+    flex-shrink: 0;
+}
+
+/* ── History Table ───────────────────────────────────────────── */
+.table-container {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 16px;
+    position: relative;
+    min-height: 60px;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table thead tr {
+    background: var(--teal-header);
+}
+
+.history-table thead th {
+    color: var(--white);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 12px 16px;
+    text-align: left;
+    letter-spacing: 0.02em;
+}
+
+.history-table tbody tr {
+    border-bottom: 1px solid var(--border-col);
+    transition: background 0.12s;
+}
+
+.history-table tbody tr:hover {
+    background: var(--teal-light);
+}
+
+.history-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.history-table tbody td {
+    padding: 11px 16px;
+    vertical-align: middle;
+    font-size: 13px;
+    color: var(--text-dark);
+}
+
+/* Field badge */
+.field-badge {
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    border-radius: 12px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Value styles */
+.old-value {
+    color: #c23934;
+    font-weight: 500;
+}
+
+.new-value {
+    color: var(--green);
+    font-weight: 500;
+}
+
+.empty-dash {
+    color: var(--text-gray);
+    font-size: 15px;
+}
+
+.changed-by {
+    font-size: 12px;
+    color: var(--text-gray);
+}
+
+.timestamp {
+    font-size: 12px;
+    color: var(--text-gray);
+    white-space: nowrap;
+}
+
+.no-data {
+    text-align: center;
+    color: var(--text-gray);
+    padding: 32px 16px !important;
+    font-size: 13px;
+}
+
+.pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--border-col);
+    background: #f8fafc;
+}
+
+.pagination-summary {
+    color: var(--text-gray);
+    font-size: 12.5px;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.page-size-label,
+.page-indicator {
+    color: var(--text-gray);
+    font-size: 12.5px;
+    white-space: nowrap;
+}
+
+.page-size-select {
+    min-width: 58px;
+    height: 30px;
+    border: 1px solid var(--border-col);
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--text-dark);
+    font-size: 12.5px;
+    padding: 4px 8px;
+}
+
+.pagination-btn {
+    min-width: 30px;
+    height: 30px;
+    border: 1px solid var(--border-col);
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--text-dark);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--teal-light);
+    border-color: var(--teal-border);
+    color: var(--green);
+}
+
+.pagination-btn:disabled {
+    color: #aab0bb;
+    background: #eef1f5;
+    cursor: not-allowed;
+}
+
+/* ── Tracking Config Log ─────────────────────────────────────── */
+.tracking-config-log {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 16px 20px;
+    border: 1px solid var(--border-col);
+}
+
+.config-log-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-col);
+}
+
+.config-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+.config-table th,
+.config-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 13px;
+}
+
+.config-table th {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.config-row {
+    background: transparent;
+}
+
+.config-row:last-child td {
+    border-bottom: none;
+}
+
+.config-name {
+    font-weight: 600;
+    color: #0070d2;
+    font-size: 13px;
+    cursor: pointer;
+}
+.config-name:hover { text-decoration: underline; }
+
+.config-fields {
+    color: var(--text-gray);
+    font-size: 12.5px;
+    white-space: normal;
+}
+
+.config-no-data {
+    color: var(--text-gray);
+    font-size: 13px;
+    padding: 12px 0 0 0;
+}
+
+.status-badge {
+    border-radius: 12px;
+    padding: 3px 12px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.status-badge.on {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #b2d8bb;
+}
+
+.status-badge.off {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f1b0b7;
+}
+
+.config-date {
+    color: var(--text-gray);
+    font-size: 12px;
+    white-space: nowrap;
+    min-width: 50px;
+    text-align: right;
+}
+
+/* ── Toast ───────────────────────────────────────────────────── */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 9999;
+    box-shadow: var(--shadow-md);
+    animation: fadeIn 0.3s ease;
+}
+
+.toast-success { background: #dff0d8; color: #3c763d; border: 1px solid #b2d8b2; }
+.toast-error   { background: #f2dede; color: #a94442; border: 1px solid #ebccd1; }
+.toast-info    { background: #d9edf7; color: #31708f; border: 1px solid #bce8f1; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filter-left, .filter-right {
+        width: 100%;
+    }
+
+    .config-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .pagination-bar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .pagination-controls {
+        justify-content: flex-start;
+    }
+}
+
+/* ── Search Input ─────────────────────────────────────────────────────────── */
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    border: 1px solid var(--border-col);
+    border-radius: var(--radius);
+    padding: 6px 28px 6px 10px;
+    font-size: 13px;
+    color: var(--text-dark);
+    background: var(--white);
+    width: 200px;
+    height: 100%;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+.search-input::placeholder {
+    color: #9aa7b9;
+    font-style: italic;
+}
+
+.search-input:focus {
+    border-color: var(--teal-border);
+    box-shadow: 0 0 0 2px rgba(76, 175, 142, 0.18);
+}
+
+/* Disabled state — shown when 'All fields' is selected */
+.search-input-disabled {
+    background: #f3f4f6;
+    color: #aab0bb;
+    cursor: not-allowed;
+    border-color: #e0e4ea;
+}
+
+.search-input-disabled::placeholder {
+    color: #bfc6d0;
+}
+
+/* Clear (×) button inside the search input */
+.search-clear-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-clear-btn:hover {
+    color: #c23934;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CUSTOM SPINNER — overlays the entire component during loading
+   ══════════════════════════════════════════════════════════════ */
+
+/* Semi-transparent backdrop covering the whole component */
+.spinner-overlay {
+    position: absolute;
+    inset: 0;                        /* top/right/bottom/left: 0 */
+    background: rgba(244, 246, 249, 0.82);
+    backdrop-filter: blur(1px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    border-radius: var(--radius);
+}
+
+/* Centred box holding the spinner + label */
+.spinner-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.spinner-label {
+    font-size: 13px;
+    color: var(--text-gray);
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    margin: 0;
+    letter-spacing: 0.04em;
+}
+
+/* ── The custom loader (user-supplied) ──────────────────────── */
+.loader {
+    position: relative;
+    width: 75px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-image:
+        linear-gradient(#c0cedb 50px, transparent 0),
+        linear-gradient(#bfdef7 50px, transparent 0),
+        linear-gradient(#addaff 50px, transparent 0),
+        linear-gradient(#74baf4 50px, transparent 0),
+        linear-gradient(#46a7f6 50px, transparent 0);
+    background-size: 8px 100%;
+    background-position: 0px 90px, 15px 78px, 30px 66px, 45px 58px, 60px 50px;
+    animation: pillerPushUp 4s linear infinite;
+}
+
+.loader:after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background: #de3500;
+    border-radius: 50%;
+    animation: ballStepUp 4s linear infinite;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
+
+@keyframes pillerPushUp {
+    0%,  40%, 100% { background-position: 0px 90px, 15px 78px, 30px 66px, 45px 58px, 60px 50px; }
+    50%, 90%       { background-position: 0px 50px, 15px 58px, 30px 66px, 45px 78px, 60px 90px; }
+}
+
+@keyframes ballStepUp {
+    0%   { transform: translate(0, 0); }
+    5%   { transform: translate(8px,  -14px); }
+    10%  { transform: translate(15px, -10px); }
+    17%  { transform: translate(23px, -24px); }
+    20%  { transform: translate(30px, -20px); }
+    27%  { transform: translate(38px, -34px); }
+    30%  { transform: translate(45px, -30px); }
+    37%  { transform: translate(53px, -44px); }
+    40%  { transform: translate(60px, -40px); }
+    50%  { transform: translate(60px,   0);   }
+    57%  { transform: translate(53px, -14px); }
+    60%  { transform: translate(45px, -10px); }
+    67%  { transform: translate(37px, -24px); }
+    70%  { transform: translate(30px, -20px); }
+    77%  { transform: translate(22px, -34px); }
+    80%  { transform: translate(15px, -30px); }
+    87%  { transform: translate(7px,  -44px); }
+    90%  { transform: translate(0,    -40px); }
+    100% { transform: translate(0, 0); }
+}
+
+/* Make the host container position:relative so the overlay anchors to it */
+:host {
+    position: relative;
+}

@@ -1,0 +1,154 @@
+<template>
+    <div class="outer-wrap">
+        <template if:true={isLoading}>
+            <c-audit360-spinner></c-audit360-spinner>
+        </template>
+        <template if:true={data}>
+            <lightning-layout class="kpi-container" multiple-rows>
+                <template for:each={kpiList} for:item="kpi">
+                    <lightning-layout-item key={kpi.id} flexibility="auto" class="slds-p-around_xx-small">
+                        <c-audit360-k-p-i kpi-number={kpi.number} color={kpi.color} kpi-label={kpi.label}
+                            kpi-subject={kpi.subject}>
+                        </c-audit360-k-p-i>
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+            <div class="delivery-container">
+                <div class="delivery-header">
+                    <span>Delivery health</span>
+                    <span class="filter-label">{selectedFilterLabel}</span>
+                </div>
+                <div class="delivery-bar">
+                    <div class="bar sent" style={sentStyle}></div>
+                    <div class="bar read" style={readStyle}></div>
+                    <div class="bar replied" style={repliedStyle}></div>
+                    <div class="bar draft" style={draftStyle}></div>
+                    <div class="bar failed" style={failedStyle}></div>
+                </div>
+                <div class="delivery-legend">
+                    <span class="legend sent">Sent {data.sentPercent}%</span>
+                    <span class="legend read">Read {data.readPercent}%</span>
+                    <span class="legend replied">Replied {data.repliedPercent}%</span>
+                    <span class="legend draft">Draft {data.draftPercent}%</span>
+                    <span class="legend failed">Failed {data.failedPercent}%</span>
+                </div>
+            </div>
+            <div class="filter-container">
+                <!-- DATE FILTER -->
+                <lightning-combobox class="filter-field" variant="label-hidden" value={selectedFilter}
+                    options={filterOptions} onchange={handleFilterChange}>
+                </lightning-combobox>
+                <!-- CUSTOM DATES -->
+                <template if:true={isCustom}>
+
+                    <div class="date-container">
+                        <lightning-input data-ui="fromDate" class="date-field" variant="label-hidden"
+                            placeholder="From Date" type="date" value={fromDate} onchange={handleFromDate}>
+                        </lightning-input>
+                    </div>
+
+                    <div class="date-container">
+                        <lightning-input data-ui="toDate" class="date-field" variant="label-hidden"
+                            placeholder="To Date" type="date" value={toDate} onchange={handleToDate}>
+                        </lightning-input>
+                    </div>
+
+                </template>
+                <!-- SEARCH BOX -->
+                <lightning-input type="search" variant="label-hidden" placeholder="Search By Subject or Email"
+                    value={searchText} onchange={handleSearchKeyChange} class="search-box">
+                </lightning-input>
+
+
+                <button class="folder-tab"
+                   onclick={handleSearch}>Search
+                </button>
+                <button class="folder-tab reset-btn"
+                      onclick={handleReset}>
+                    Reset
+                    </button>
+            </div>
+            <!-- FEED CONTAINER -->
+            <div class="feed-container">
+
+                <!-- Header -->
+                <div class="feed-header">
+                    <span>Recent Email Activity</span>
+                    <span class="live-badge">LIVE</span>
+                </div>
+
+                <!-- SCROLLABLE TABLE -->
+                <div class="feed-table-scroll">
+
+                    <!-- TABLE HEADER -->
+                    <div class="feed-table-header">
+                        <div class="header-subject">Email</div>
+                        <div class="header-datetime">Date & Time</div>
+                        <div class="header-status">Status</div>
+                    </div>
+
+                    <!-- DATA ROWS -->
+                    <template for:each={pagedEmails} for:item="email">
+                        <div class="feed-row" key={email.Id}>
+
+                            <!-- LEFT -->
+                            <div class="feed-left">
+                                <div class={email.dotClass}></div>
+
+                                <div class="feed-content">
+                                    <div class="feed-subject">
+                                        {email.Subject}
+                                    </div>
+
+                                    <div class="email-route">
+                                        {email.fromAddress} → {email.toAddress}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DATE -->
+                            <div class="feed-time">
+                                {email.time}
+                            </div>
+
+                            <!-- STATUS -->
+                            <div class="status-container">
+                                <div class={email.statusClass}>
+                                    {email.statusLabel}
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+
+                </div>
+                <!-- PAGINATION -->
+                <div class="pagination-container">
+
+                    <button class="folder-tab"
+        onclick={handlePrevious}
+        disabled={isPreviousDisabled}>
+        Previous
+    </button>
+
+                    <span class="page-info">
+        Page {currentPage} of {totalPages}
+    </span>
+
+                    <button class="folder-tab"
+        onclick={handleNext}
+        disabled={isNextDisabled}>
+        Next
+    </button>
+
+                </div>
+            </div>
+        </template>
+        <!-- Optional Loading State -->
+        <template if:false={data}>
+            <div style="padding:20px;">Loading dashboard...</div>
+        </template>
+    </div>
+    <c-audit360-pro-version-modal show-modal={showModal} onclosemodal={handleCloseModal}>
+    </c-audit360-pro-version-modal>
+</template>

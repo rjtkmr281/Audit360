@@ -1,0 +1,227 @@
+<template>
+    <div class="outer-wrap">
+        <!-- ── Full-page overlay spinner — shown during ANY loading operation ── -->
+        <template if:true={isLoading}>
+            <c-audit360-spinner></c-audit360-spinner>
+        </template>
+
+        <!-- Stats Cards -->
+        <lightning-layout class="kpi-container" multiple-rows>
+            <template for:each={kpiList} for:item="kpi">
+                <lightning-layout-item key={kpi.id} flexibility="auto" class="slds-p-around_xx-small">
+                    <c-audit360-k-p-i kpi-number={kpi.number} color={kpi.color} kpi-label={kpi.label}
+                        kpi-subject={kpi.subject}>
+                    </c-audit360-k-p-i>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-left">
+
+                <!-- Object dropdown -->
+                <!-- <div class="filter-dropdown" onclick={toggleObjectDropdown}>
+                    <span>Object: {selectedObject}</span>
+                    <span class="arrow">&#9660;</span>
+                    <template if:true={showObjectDropdown}>
+                        <div class="dropdown-menu">
+                            <template for:each={objectOptions} for:item="opt">
+                                <div key={opt} class="dropdown-item" data-value={opt} onclick={selectObject}>{opt}</div>
+                            </template>
+                        </div>
+                    </template>
+                </div> -->
+
+                <!-- Field dropdown -->
+                <!-- <div class="filter-dropdown" onclick={toggleFieldDropdown}>
+                    <span>Field: {selectedField}</span>
+                    <span class="arrow">&#9660;</span>
+                    <template if:true={showFieldDropdown}>
+                        <div class="dropdown-menu">
+                            <template for:each={fieldOptions} for:item="opt">
+                                <div key={opt} class="dropdown-item" data-value={opt} onclick={selectField}>{opt}</div>
+                            </template>
+                        </div>
+                    </template>
+                </div> -->
+
+                <!-- Object dropdown -->
+                <div class="filter-dropdown" onclick={toggleObjectDropdown}>
+                    <span>Object: {selectedObject}</span>
+                    <span class="arrow">&#9660;</span>
+                    <template if:true={showObjectDropdown}>
+                        <div class="dropdown-menu">
+                            <template for:each={objectOptions} for:item="opt">
+                                <div key={opt} class="dropdown-item" data-value={opt} onclick={selectObject}>{opt}</div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Field dropdown -->
+                <!-- Field dropdown -->
+                <div class="filter-dropdown" onclick={toggleFieldDropdown}>
+
+                    <span>Field: {selectedField}</span>
+                    <span class="arrow">&#9660;</span>
+
+                    <template if:true={showFieldDropdown}>
+                        <div class="dropdown-menu">
+                            <template for:each={fieldOptions} for:item="opt">
+                                <div key={opt} class="dropdown-item" data-value={opt} onclick={selectField}>
+                                    {opt}
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Operator dropdown — visible only when a specific field is selected -->
+                <template if:true={isFieldSelected} >
+                    <div class="filter-dropdown operator-dropdown" onclick={toggleOperatorDropdown}
+                        title="Filter operator">
+                        <span class="operator-label">Op: {selectedOperator}</span>
+                        <span class="arrow">&#9660;</span>
+                        <template if:true={showOperatorDropdown}>
+                            <div class="dropdown-menu">
+                                <template for:each={operatorOptions} for:item="op">
+                                    <div key={op} class="dropdown-item" data-value={op} onclick={selectOperator}>{op}
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Search by field value — disabled when 'All fields' is selected -->
+                <div class="search-input-wrapper">
+                    <input
+                        type="text"
+                        class={searchInputClass}
+                        placeholder="Search by field value"
+                        value={searchValue}
+                        disabled={isSearchDisabled}
+                        oninput={handleSearchInput}
+                        title={searchInputTitle}
+                    />
+                    <template if:true={searchValue}>
+                        <button class="search-clear-btn" onclick={clearSearch} title="Clear search">&#x2715;</button>
+                    </template>
+                </div>
+
+                <!-- Date range dropdown -->
+                <div class="filter-dropdown" onclick={toggleDateDropdown}>
+                    <span>{selectedDateRange}</span>
+                    <span class="arrow">&#9660;</span>
+                    <template if:true={showDateDropdown}>
+                        <div class="dropdown-menu">
+                            <template for:each={dateOptions} for:item="opt">
+                                <div key={opt} class="dropdown-item" data-value={opt} onclick={selectDate}>{opt}</div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+            </div>
+
+            <!-- <div class="filter-right">
+                <button class="btn-tracking-config" onclick={openTrackingConfig}>Tracking Config</button>
+                <button class="btn-export" onclick={exportCsv}>Export CSV</button>
+            </div> -->
+        </div>
+        <!-- modal -->
+        <c-audit360-pro-version-modal show-modal={showModal} onclosemodal={handleCloseModal}>
+        </c-audit360-pro-version-modal>
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <span class="info-icon">&#9432;</span>
+            Read-only view of native Salesforce Field History (max 20 fields/object). Audit360 reads — does not write
+            additional logs.
+        </div>
+
+        <!-- Field History Table -->
+        <div class="table-container">
+            <template if:false={isLoading}>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Old Value</th>
+                            <th>New Value</th>
+                            <th>Changed By</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template if:true={hasRecords}>
+                            <template for:each={paginatedHistory} for:item="record">
+                                <tr key={record.id}>
+                                    <td><span class="field-badge">{record.fieldName}</span></td>
+                                    <td><span class={record.oldValueClass}>{record.oldValueDisplay}</span></td>
+                                    <td><span class={record.newValueClass}>{record.newValueDisplay}</span></td>
+                                    <td class="changed-by">{record.changedBy}</td>
+                                    <td class="timestamp">{record.timestamp}</td>
+                                </tr>
+                            </template>
+                        </template>
+                        <template if:false={hasRecords}>
+                            <tr>
+                                <td colspan="5" class="no-data">No field history records found.</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+                <template if:true={hasRecords}>
+                    <div class="pagination-bar">
+                        <div class="pagination-summary">{paginationLabel}</div>
+                        <div class="pagination-controls">
+                            <label class="page-size-label" for="pageSize">Rows</label>
+                            <select id="pageSize" class="page-size-select" onchange={handlePageSizeChange}>
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                            <button class="pagination-btn" onclick={goToFirstPage} disabled={isFirstPage} title="First page">&laquo;</button>
+                            <button class="pagination-btn" onclick={goToPreviousPage} disabled={isFirstPage} title="Previous page">&lsaquo;</button>
+                            <span class="page-indicator">Page {normalizedCurrentPage} of {totalPages}</span>
+                            <button class="pagination-btn" onclick={goToNextPage} disabled={isLastPage} title="Next page">&rsaquo;</button>
+                            <button class="pagination-btn" onclick={goToLastPage} disabled={isLastPage} title="Last page">&raquo;</button>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </div>
+
+        <!-- Tracking Config Log -->
+        <div class="tracking-config-log">
+            <h3 class="config-log-title">Field tracking configuration log — when tracking was turned on/off</h3>
+            <template if:true={hasTrackingConfig}>
+                <table class="config-table">
+                    <thead>
+                        <tr>
+                            <th>Object</th>
+                            <th>Fields</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={trackingConfigLog} for:item="config">
+                            <tr key={config.id} class="config-row">
+                                <td class="config-name">{config.objectName}</td>
+                                <td class="config-fields">{config.fields}</td>
+                                <td><span class={config.statusClass}>{config.status}</span></td>
+                                <td class="config-date">{config.date}</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+            <template if:false={hasTrackingConfig}>
+                <div class="no-data config-no-data">No field tracking configuration log found.</div>
+            </template>
+        </div>
+
+    </div>
+</template>

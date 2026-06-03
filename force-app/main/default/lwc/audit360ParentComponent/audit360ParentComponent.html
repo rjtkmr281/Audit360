@@ -1,0 +1,67 @@
+<template>
+    <div class="audit360-container">
+        <div class="container">
+            <lightning-card>
+
+                <div class="header">
+                    <div class="logo"><img src={logoUrl} alt="Audit360 Logo" width="100"/></div>
+                </div>
+
+                <lightning-tabset active-tab-value={activeTab} onactive={handleTabChange}>
+
+                    <!-- Setup Audit -->
+                    <template if:true={hasSetupAuditAccess}>
+                        <lightning-tab style="padding-left:5px;" label={labels.setupAudit} value="setup">
+
+                            <c-audit360-setup-audit tab-name={tabName}></c-audit360-setup-audit>
+
+                        </lightning-tab>
+                    </template>
+
+                    <!-- Email Status -->
+                    <template if:true={hasEmailStatusAccess}>
+                        <lightning-tab label={labels.emailStatus} value="email">
+                            <c-audit360-email-tracker tab-name={tabName}></c-audit360-email-tracker>
+                        </lightning-tab>
+                    </template>
+
+                    <!-- Reports -->
+                    <template if:true={hasReportsAccess}>
+                        <lightning-tab label={labels.reports} value="reports">
+                            <c-audit360-report-tracker tab-name={tabName}></c-audit360-report-tracker>
+                        </lightning-tab>
+                    </template>
+
+                    <!-- Job Monitor -->
+                    <template if:true={hasJobMonitorAccess}>
+                        <lightning-tab label={labels.jobMonitor} value="job">
+                            <c-audit360-job-monitor tab-name={tabName}></c-audit360-job-monitor>
+                        </lightning-tab>
+                    </template>
+
+                    <!-- Field History -->
+                    <template if:true={hasFieldHistoryAccess}>
+                        <lightning-tab label={labels.fieldHistory} value="history">
+                            <c-audit360-field-history-tracker tab-name={tabName}></c-audit360-field-history-tracker>
+                        </lightning-tab>
+                    </template>
+
+                    <!-- Field Access Dashboard -->
+                    <template if:true={hasFieldAccessDashboardAccess}>
+                        <lightning-tab label="Field Access & Tracking" value="Field Access & Tracking">
+                            <c-audit360-field-access-and-tracking tab-name={tabName}>
+                            </c-audit360-field-access-and-tracking>
+                        </lightning-tab>
+                    </template>
+                    <template if:true={hasLoginActivityMonitor}>
+                        <lightning-tab label="Login Activity Monitor" value="Login Activity Monitor">
+                            <c-audit360-login-activity-tracker tab-name={tabName}>
+                            </c-audit360-login-activity-tracker>
+                        </lightning-tab>
+                    </template>
+                </lightning-tabset>
+
+            </lightning-card>
+        </div>
+    </div>
+</template>

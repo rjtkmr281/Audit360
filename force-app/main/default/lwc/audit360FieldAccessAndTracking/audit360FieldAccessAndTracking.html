@@ -1,0 +1,127 @@
+<template>
+
+    <lightning-card>
+
+        <div class="slds-p-around_medium">
+            <template if:true={isLoading}>
+                <c-audit360-spinner></c-audit360-spinner>
+            </template>
+            <div class="topFilterBox" style="margin-top: -1%;">
+                <div class="slds-grid slds-gutters">
+                    <!-- OBJECT -->
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox style="margin-left: 1%;margin-right: 6%;" label="Select Object"
+                            value={selectedObject} options={objectOptions} onchange={handleObjectChange}>
+                        </lightning-combobox>
+                    </div>
+                    <!-- FIELD -->
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox style="margin-right: 6%;" label="Select Field" value={selectedField}
+                            options={fieldOptions} onchange={handleFieldChange}>
+                        </lightning-combobox>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECORD TYPES -->
+            <template if:true={recordTypeData.length}>
+                <div class="topFilterBox" style="height: 260px;overflow: auto;">
+                    <h2 class="title">
+                        Record Type Picklist Values
+                    </h2>
+                    <template for:each={recordTypeData} for:item="item">
+                        <div key={item.recordTypeName} class="section">
+                            <!-- HEADER -->
+                            <div class="rtHeader">
+                                <div class="rtName">
+                                    Record Type Name : &nbsp; {item.recordTypeName}
+                                </div>
+                                <div class="countBox">
+                                    Total:<samp style="color:blue;font-weight: bold;">{item.totalValues} &nbsp;</samp>
+
+                                    |
+
+                                    Selected:
+                                    <samp style="color:green;font-weight: bold;"> {item.selectedCount} &nbsp;</samp>
+
+                                    |
+
+                                    Unselected:
+                                    <samp style="color:red;font-weight: bold;"> {item.unselectedCount}</samp>
+
+                                </div>
+                            </div>
+                            <!-- VALUE CONTAINER -->
+                            <div class="valueContainer">
+                                <!-- SELECTED -->
+                                <div class="valueBox selectedBox">
+                                    <div class="inlineData">
+                                        <div class="subTitle">
+                                            Selected Values : &nbsp;&nbsp;
+                                        </div>
+                                        <template for:each={item.selectedValues} for:item="val">
+                                            <span key={val} style="margin-top:-2px;"
+                                              class="pill selected">
+                                            {val}
+                                        </span>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <!-- UNSELECTED -->
+                                <div class="valueBox unselectedBox">
+                                    <div class="inlineData">
+                                        <div class="subTitle">
+                                            Unselected Values : &nbsp;&nbsp;
+                                        </div>
+                                        <template for:each={item.unselectedValues} for:item="val">
+                                            <span key={val} style="margin-top:-5px;"
+                                              class="pill unselected">
+                                            {val}
+                                        </span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+            <!-- profile -->
+            <template if:true={profileAccessData.length}>
+                <div class="topFilterBox" style="height: 250px;overflow: auto;">
+                    <div class="slds-text-heading_medium slds-m-bottom_small">
+                        Field Access By Profile
+                    </div>
+
+                    <lightning-datatable key-field="profileName" data={profileAccessData} columns={profileColumns}>
+                    </lightning-datatable>
+                </div>
+            </template>
+            <!-- PERMISSION SETS -->
+            <template if:true={permissionSets.length}>
+                <div class="topFilterBox" style="height: 250px;overflow: auto;">
+                    <h2 class="title">
+                        Permission Sets
+                    </h2>
+
+                    <!-- <template for:each={permissionSets} for:item="ps">
+
+                            <div key={ps} class="card">
+                                {ps}
+                            </div> -->
+                    <lightning-datatable key-field="permissionSetName" data={permissionSets}
+                        columns={permissionSetColumns}>
+                    </lightning-datatable>
+
+                    <!-- </template> -->
+
+
+
+                </div>
+            </template>
+
+        </div>
+    </lightning-card>
+
+</template>

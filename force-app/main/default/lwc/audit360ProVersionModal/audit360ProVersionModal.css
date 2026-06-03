@@ -1,0 +1,147 @@
+/* Modal Container */
+
+.custom-modal .slds-modal__container {
+    max-width: 100%;
+    width: 78%;
+    height: 85%;
+    margin-top: 3.5%;
+    position: relative;    
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 14%;
+    border-bottom-right-radius: 14%;
+    overflow: hidden;
+    animation: popup 0.35s ease;
+}
+
+
+/* Main Body */
+
+.modal-body {
+    background: linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb);
+    padding: 20px 20px;
+    text-align: center;
+    color: white;
+}
+
+
+/* Close Icon */
+
+.close-icon {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    z-index: 10;
+
+    --slds-c-icon-color-foreground-default: white;
+
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    padding: 6px;
+
+    transition: all 0.3s ease;
+}
+
+.close-icon:hover {
+    background: rgba(255, 255, 255, 0.30);
+    transform: scale(1.1);
+}
+
+
+/* Rocket Icon */
+
+.icon-box {
+    font-size: 45px;
+    margin-bottom: 1%;
+    margin-top: 1%;
+    animation: float 2s infinite ease-in-out;
+}
+
+
+/* Title */
+
+.title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 1%;
+}
+
+
+/* Messages */
+
+.message {
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.95;
+}
+
+.message2 {
+    margin-top: 14px;
+    font-size: 15px;
+    line-height: 1;
+    color: #dbeafe;
+}
+
+
+/* Feature Box */
+
+.feature-box {
+    margin-top: 25px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    padding: 15px;
+    text-align: left;
+    backdrop-filter: blur(8px);
+}
+
+.feature-item {
+    padding: 8px 0;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.feature-item:last-child {
+    border-bottom: none;
+}
+
+
+/* Buttons */
+
+.btn-section {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+
+/* Animation */
+
+@keyframes popup {
+
+    from {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+@keyframes float {
+
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}

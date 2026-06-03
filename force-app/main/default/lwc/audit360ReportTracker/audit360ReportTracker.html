@@ -1,0 +1,166 @@
+<template>
+    <div class="outer-wrap">
+
+        <!-- Top Stats Cards -->
+        <template if:true={isLoading}>
+            <c-audit360-spinner></c-audit360-spinner>
+        </template>
+        <lightning-layout class="kpi-container" multiple-rows>
+            <template for:each={kpiList} for:item="kpi">
+                <lightning-layout-item key={kpi.id} flexibility="auto" class="slds-p-around_xx-small">
+                    <c-audit360-k-p-i kpi-number={kpi.number} color={kpi.color} kpi-label={kpi.label}
+                        kpi-subject={kpi.subject}>
+                    </c-audit360-k-p-i>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+
+        <!-- Folder Tabs Section -->
+        <div class="folder-tabs-section">
+            <!-- First 5 folders as buttons -->
+            <template for:each={visibleFolderTabs} for:item="folder">
+                <button
+                    key={folder.id}
+                    class={folder.cssClass}
+                    data-id={folder.id}
+                    data-name={folder.name}
+                    onclick={handleFolderTabClick}
+                >
+                    {folder.name}
+                </button>
+            </template>
+
+            <!-- Picklist for additional folders if more than 5 -->
+            <template if:true={showFolderPicklist}>
+                <div class="picklist-wrapper">
+                    <select class="folder-picklist" onchange={handlePicklistChange}>
+                        <option value="">More Folders...</option>
+                        <template for:each={extraFolders} for:item="folder">
+                            <option key={folder.id} value={folder.id}>{folder.name}</option>
+                        </template>
+                    </select>
+                </div>
+            </template>
+        </div>
+
+        <!-- Download Tracking Log — 5 records per page -->
+        <div class="table-card download-log-card">
+            <div class="download-log-header">
+                <h3 class="section-title">Download tracking log</h3>
+                <span class="pro-badge">Pro Feature</span>
+            </div>
+            <div class="table-scroll slds-scrollable_x" tabindex="0">
+                <table class="report-table download-table">
+                    <thead>
+                        <tr>
+                            <th>Report Name</th>
+                            <th>Downloaded By</th>
+                            <th>Format</th>
+                            <th>Time</th>
+                            <th>Folder</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template if:true={hasDownloadLogs}>
+                            <template for:each={pagedDownloads} for:item="log">
+                                <tr key={log.id}>
+                                    <td>
+                                        <a href={log.reportUrl} class="report-link">{log.reportName}</a>
+                                    </td>
+                                    <td class="folder-name">{log.downloadedBy}</td>
+                                    <td>
+                                        <span class={log.formatBadgeClass}>{log.format}</span>
+                                    </td>
+                                    <td class="last-run">{log.timeDisplay}</td>
+                                    <td class="folder-name">{log.folderName}</td>
+                                </tr>
+                            </template>
+                        </template>
+                        <template if:false={hasDownloadLogs}>
+                            <tr>
+                                <td colspan="5" class="no-data">No download activity found.</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Download Pagination Bar -->
+            <template if:true={hasDownloadLogs}>
+                <div class="pag-bar">
+                    <button class="pag-btn" disabled={isFirstPageDownloads} onclick={handlePrevDownloads}>← Prev</button>
+                    <span class="pag-info">{pageInfoDownloads}</span>
+                    <button class="pag-btn" disabled={isLastPageDownloads} onclick={handleNextDownloads}>Next →</button>
+                </div>
+                <div class="status-bar">{statusMsgDownloads}</div>
+            </template>
+        </div>
+        <c-audit360-pro-version-modal show-modal={showModal} onclosemodal={handleCloseModal}>
+        </c-audit360-pro-version-modal>
+        <!-- Reports Table — 10 records per page -->
+        <div class="table-card">
+            <template if:true={isLoadingReports}>
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <span>Loading reports...</span>
+                </div>
+            </template>
+            <template if:false={isLoadingReports}>
+                <div class="table-scroll slds-scrollable_x" tabindex="0">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Report Name</th>
+                                <th>Folder</th>
+                                <th>Format</th>
+                                <th>Last Run</th>
+                                <th>Run By</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template if:true={hasReports}>
+                                <template for:each={pagedReports} for:item="report">
+                                    <tr key={report.id}>
+                                        <td>
+                                            <a href={report.url} class="report-link" data-id={report.id}
+                                                onclick={handleReportClick}>
+                                                {report.name}
+                                            </a>
+                                        </td>
+                                        <td class="folder-name">{report.folderName}</td>
+                                        <td>
+                                            <span class={report.formatBadgeClass}>{report.format}</span>
+                                        </td>
+                                        <td class="last-run">{report.lastRunDisplay}</td>
+                                        <td>{report.runBy}</td>
+                                        <td>
+                                            <span class="status-badge">
+                                                <span class="status-dot"></span>
+                                            <span class="status-text">{report.staus}</span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </template>
+                            <template if:false={hasReports}>
+                                <tr>
+                                    <td colspan="6" class="no-data">No reports found for this folder.</td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Reports Pagination Bar -->
+                <template if:true={hasReports}>
+                    <div class="pag-bar">
+                        <button class="pag-btn" disabled={isFirstPageReports} onclick={handlePrevReports}>← Prev</button>
+                        <span class="pag-info">{pageInfoReports}</span>
+                        <button class="pag-btn" disabled={isLastPageReports} onclick={handleNextReports}>Next →</button>
+                    </div>
+                    <div class="status-bar">{statusMsgReports}</div>
+                </template>
+            </template>
+        </div>
+
+    </div>
+</template>

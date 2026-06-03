@@ -1,0 +1,543 @@
+<template>
+    <div class="lg-app">
+
+        <!-- ── Top Nav Bar ─────────────────────────────────────────── -->
+        <div class="lg-navbar">
+            <div class="lg-brand">
+                <div class="lg-brand-icon">
+                    <lightning-icon icon-name="utility:shield" size="small" class="brand-icon"></lightning-icon>
+                </div>
+                <div class="lg-brand-text">
+                    <span class="lg-brand-name">LoginGuard</span>
+                    <span class="lg-brand-tag">Security Monitor</span>
+                </div>
+            </div>
+            <div class="lg-nav-tabs">
+                <button class={tabDashboard} onclick={showDashboard} data-tab="dashboard">
+                    <lightning-icon icon-name="utility:home" size="x-small"></lightning-icon>
+                    Dashboard
+                </button>
+                <button class={tabHistory} onclick={showHistory} data-tab="history">
+                    <lightning-icon icon-name="utility:list" size="x-small"></lightning-icon>
+                    Login History
+                </button>
+                <button class={tabAlerts} onclick={showAlerts} data-tab="alerts">
+                    <lightning-icon icon-name="utility:warning" size="x-small"></lightning-icon>
+                    Security Alerts
+                    <template if:true={alertCount}>
+                        <span class="alert-badge">{alertCount}</span>
+                    </template>
+                </button>
+                <button class={tabUsers} onclick={showUsers} data-tab="users">
+                    <lightning-icon icon-name="utility:people" size="x-small"></lightning-icon>
+                    Top Users
+                </button>
+            </div>
+            <div class="lg-nav-actions">
+                <lightning-combobox label="" value={dateRangeFilter} options={dateRangeOptions}
+                    onchange={handleDateRange} class="date-range-picker" variant="label-hidden">
+                </lightning-combobox>
+                <button class="lg-btn-icon" onclick={handleRefresh} title="Refresh">
+                    <lightning-icon icon-name="utility:refresh" size="x-small"></lightning-icon>
+                </button>
+                <button class="lg-btn-export" onclick={handleExport} title="Export CSV">
+                    <lightning-icon icon-name="utility:download" size="x-small"></lightning-icon>
+                    Export
+                </button>
+            </div>
+        </div>
+        <!-- modal -->
+        <c-audit360-pro-version-modal show-modal={showModal} onclosemodal={handleCloseModal}>
+        </c-audit360-pro-version-modal>
+        <!-- ── Loading Overlay ────────────────────────────────────────── -->
+        <template if:true={isLoading}>
+            <div class="lg-loading-overlay">
+                <lightning-spinner alternative-text="Loading..." size="medium" variant="brand"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- TAB 1 ── DASHBOARD                                        -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <template if:true={isDashboard}>
+            <div class="lg-content">
+
+                <!-- KPI Row -->
+                <div class="lg-kpi-row">
+                    <div class="kpi-card kpi-blue">
+                        <div class="kpi-top">
+                            <span class="kpi-label">Total Logins</span>
+                            <div class="kpi-ico kpi-ico-blue">
+                                <lightning-icon icon-name="utility:login" size="x-small"></lightning-icon>
+                            </div>
+                        </div>
+                        <div class="kpi-value">{stats.totalLogins}</div>
+                        <div class="kpi-sub">In selected period</div>
+                    </div>
+                    <div class="kpi-card kpi-green">
+                        <div class="kpi-top">
+                            <span class="kpi-label">Successful</span>
+                            <div class="kpi-ico kpi-ico-green">
+                                <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                            </div>
+                        </div>
+                        <div class="kpi-value">{stats.successLogins}</div>
+                        <div class="kpi-sub">{successRate}% success rate</div>
+                    </div>
+                    <div class="kpi-card kpi-red">
+                        <div class="kpi-top">
+                            <span class="kpi-label">Failed Logins</span>
+                            <div class="kpi-ico kpi-ico-red">
+                                <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                            </div>
+                        </div>
+                        <div class="kpi-value">{stats.failedLogins}</div>
+                        <div class="kpi-sub">Requires attention</div>
+                    </div>
+                    <div class="kpi-card kpi-purple">
+                        <div class="kpi-top">
+                            <span class="kpi-label">Unique Users</span>
+                            <div class="kpi-ico kpi-ico-purple">
+                                <lightning-icon icon-name="utility:user" size="x-small"></lightning-icon>
+                            </div>
+                        </div>
+                        <div class="kpi-value">{stats.uniqueUsers}</div>
+                        <div class="kpi-sub">Distinct accounts</div>
+                    </div>
+                    <div class="kpi-card kpi-amber">
+                        <div class="kpi-top">
+                            <span class="kpi-label">Today's Logins</span>
+                            <div class="kpi-ico kpi-ico-amber">
+                                <lightning-icon icon-name="utility:clock" size="x-small"></lightning-icon>
+                            </div>
+                        </div>
+                        <div class="kpi-value">{stats.todayLogins}</div>
+                        <div class="kpi-sub">Since midnight</div>
+                    </div>
+                </div>
+
+                <!-- Chart + Suspicious IPs row -->
+                <div class="lg-mid-row">
+
+                    <!-- Browser Breakdown -->
+                    <div class="lg-card lg-card-browser">
+                        <div class="card-header">
+                            <span class="card-title">Browser Breakdown</span>
+                            <lightning-icon icon-name="utility:browser" size="x-small"></lightning-icon>
+                        </div>
+                        <div class="browser-list">
+                            <template for:each={stats.browserBreakdown} for:item="b">
+                                <div key={b.label} class="browser-row">
+                                    <span class="browser-name">{b.label}</span>
+                                    <div class="browser-bar-wrap">
+                                        <div class="browser-bar" style={b.barStyle}></div>
+                                    </div>
+                                    <span class="browser-count">{b.value}</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Suspicious IPs -->
+                    <div class="lg-card lg-card-ips">
+                        <div class="card-header">
+                            <span class="card-title">Failed Login IPs</span>
+                            <lightning-icon icon-name="utility:warning" size="x-small"></lightning-icon>
+                        </div>
+                        <div class="ip-list">
+                            <template for:each={stats.suspiciousIps} for:item="ip">
+                                <div key={ip.ipAddress} class="ip-row">
+                                    <div class="ip-rank">{ip.rank}</div>
+                                    <span class="ip-addr">{ip.ipAddress}</span>
+                                    <span class="ip-count-badge">{ip.count} failures</span>
+                                </div>
+                            </template>
+                            <template if:false={hasIps}>
+                                <div class="empty-mini">No suspicious IPs detected ✓</div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Success Rate Donut -->
+                    <div class="lg-card lg-card-donut">
+                        <div class="card-header">
+                            <span class="card-title">Success Rate</span>
+                            <lightning-icon icon-name="utility:chart" size="x-small"></lightning-icon>
+                        </div>
+                        <div class="donut-wrap">
+                            <svg viewBox="0 0 120 120" class="donut-svg">
+                                <circle cx="60" cy="60" r="50" class="donut-bg" />
+                                <circle cx="60" cy="60" r="50" class="donut-success" style={donutSuccessStyle} />
+                                <circle cx="60" cy="60" r="50" class="donut-failed" style={donutFailedStyle} />
+                            </svg>
+                            <div class="donut-center">
+                                <div class="donut-pct">{successRate}%</div>
+                                <div class="donut-lbl">Success</div>
+                            </div>
+                        </div>
+                        <div class="donut-legend">
+                            <span class="legend-dot dot-green"></span><span>Success ({stats.successLogins})</span>
+                            <span class="legend-dot dot-red"></span><span>Failed ({stats.failedLogins})</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Active Users -->
+                <div class="lg-card lg-card-full">
+                    <div class="card-header">
+                        <span class="card-title">Top Active Users</span>
+                        <lightning-icon icon-name="utility:people" size="x-small"></lightning-icon>
+                    </div>
+                    <div class="top-users-list">
+                        <template for:each={stats.topUsers} for:item="u">
+                            <div key={u.userId} class="top-user-row" data-userid={u.userId} onclick={handleUserDrill}>
+                                <div class="top-user-rank">{u.rank}</div>
+                                <div class="top-user-avatar">{u.initials}</div>
+                                <div class="top-user-info">
+                                    <div class="top-user-name">{u.userName}</div>
+                                </div>
+                                <div class="top-user-bar-wrap">
+                                    <div class="top-user-bar" style={u.barStyle}></div>
+                                </div>
+                                <div class="top-user-count">{u.count} logins</div>
+                                <lightning-icon icon-name="utility:chevronright" size="x-small" class="drill-icon">
+                                </lightning-icon>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- TAB 2 ── LOGIN HISTORY TABLE                              -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <template if:true={isHistory}>
+            <div class="lg-content">
+
+                <!-- Filters Bar -->
+                <div class="lg-filter-bar">
+                    <div class="filter-search-wrap">
+                        <lightning-icon icon-name="utility:search" size="x-small" class="search-ico"></lightning-icon>
+                        <input
+                            type="text"
+                            class="lg-search"
+                            placeholder="Search by name, email, IP address..."
+                            value={searchKey}
+                            oninput={handleSearch}/>
+                    </div>
+                    <lightning-combobox label="" variant="label-hidden" value={statusFilter} options={statusOptions}
+                        onchange={handleStatusFilter} class="filter-select">
+                    </lightning-combobox>
+                    <lightning-combobox label="" variant="label-hidden" value={loginTypeFilter}
+                        options={loginTypeOptions} onchange={handleLoginTypeFilter} class="filter-select">
+                    </lightning-combobox>
+                    <lightning-combobox label="" variant="label-hidden" value={browserFilter} options={browserOptions}
+                        onchange={handleBrowserFilter} class="filter-select">
+                    </lightning-combobox>
+                    <lightning-combobox label="" variant="label-hidden" value={pageSize} options={pageSizeOptions}
+                        onchange={handlePageSize} class="filter-select filter-select-sm">
+                    </lightning-combobox>
+                    <button class="lg-btn-clear" onclick={clearFilters}>Clear</button>
+                </div>
+
+                <!-- Results Count -->
+                <div class="lg-result-bar">
+                    <span class="result-count">{totalCount} records found</span>
+                    <template if:true={hasActiveFilters}>
+                        <span class="filter-active-tag">Filters active</span>
+                    </template>
+                </div>
+
+                <!-- Table -->
+                <div class="lg-table-card">
+                    <template if:true={hasRecords}>
+                        <table class="lg-table">
+                            <thead>
+                                <tr>
+                                    <th data-field="User.Name" onclick={handleSort} class="sortable-col">
+                                        User <template
+                                            if:true={sortByUser}><span class="sort-arrow">{sortArrow}</span></template>
+                                    </th>
+                                    <th>Profile / Role</th>
+                                    <th data-field="LoginTime" onclick={handleSort} class="sortable-col">
+                                        Login Time <template
+                                            if:true={sortByTime}><span class="sort-arrow">{sortArrow}</span></template>
+                                    </th>
+                                    <th>Login Type</th>
+                                    <th>IP Address</th>
+                                    <th>Browser</th>
+                                    <th>Platform</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={loginRecords} for:item="row">
+                                    <tr key={row.id} class="lg-row">
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class={row.avatarClass}>{row.initials}</div>
+                                                <div>
+                                                    <div class="user-name">{row.userName}</div>
+                                                    <div class="user-email">{row.userEmail}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="profile-cell">
+                                                <span class="profile-pill">{row.profileName}</span>
+                                                <template if:true={row.roleName}>
+                                                    <span class="role-text">{row.roleName}</span>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="time-primary">{row.loginDate}</div>
+                                            <div class="time-secondary">{row.loginTime}</div>
+                                        </td>
+                                        <td><span class="type-pill">{row.loginType}</span></td>
+                                        <td><code class="ip-mono">{row.sourceIp}</code></td>
+                                        <td>
+                                            <div class="browser-cell">
+                                                <lightning-icon icon-name={row.browserIcon} size="x-small">
+                                                </lightning-icon>
+                                                <span>{row.browser}</span>
+                                            </div>
+                                        </td>
+                                        <td>{row.platform}</td>
+                                        <td><span class={row.statusClass}>{row.status}</span></td>
+                                        <td>
+                                            <button class="drill-btn" data-userid={row.userId} onclick={handleUserDrill}
+                                                title="View user history">
+                                                <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+
+                        <!-- Pagination -->
+                        <div class="lg-pager">
+                            <span class="pager-info">Showing {startRecord}–{endRecord} of {totalCount}</span>
+                            <div class="pager-controls">
+                                <button class="pager-btn" disabled={isFirstPage} onclick={handlePrev}>‹ Prev</button>
+                                <template for:each={pageButtons} for:item="pg">
+                                    <button key={pg.num} class={pg.cls} onclick={handlePageJump} data-page={pg.num}>{pg.num}</button>
+                                </template>
+                                <button class="pager-btn" disabled={isLastPage} onclick={handleNext}>Next ›</button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template if:false={hasRecords}>
+                        <div class="lg-empty-state">
+                            <lightning-icon icon-name="utility:search" size="large"></lightning-icon>
+                            <h3>No records found</h3>
+                            <p>Try adjusting your filters or search term</p>
+                            <button class="lg-btn-secondary" onclick={clearFilters}>Clear Filters</button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- TAB 3 ── SECURITY ALERTS                                  -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <template if:true={isAlerts}>
+            <div class="lg-content">
+                <div class="alerts-header">
+                    <h2 class="section-title">Security Alerts</h2>
+                    <p class="section-sub">Real-time threat detection based on login patterns</p>
+                </div>
+
+                <template if:true={hasAlerts}>
+                    <div class="alerts-grid">
+                        <template for:each={securityAlerts} for:item="alert">
+                            <div key={alert.alertType} class={alert.cardClass}>
+                                <div class="alert-left">
+                                    <div class={alert.iconClass}>
+                                        <lightning-icon icon-name={alert.icon} size="small"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="alert-body">
+                                    <div class="alert-top-row">
+                                        <span class="alert-type">{alert.alertType}</span>
+                                        <span class={alert.severityClass}>{alert.severity}</span>
+                                    </div>
+                                    <div class="alert-user">{alert.userName}</div>
+                                    <div class="alert-desc">{alert.description}</div>
+                                </div>
+                                <div class="alert-right">
+                                    <button class="alert-action-btn" data-userid={alert.userId} onclick={handleUserDrill}>
+                                        View History
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <template if:false={hasAlerts}>
+                    <div class="lg-empty-state">
+                        <lightning-icon icon-name="utility:shield" size="large"></lightning-icon>
+                        <h3>All Clear!</h3>
+                        <p>No security alerts detected in your org</p>
+                    </div>
+                </template>
+
+                <!-- Alert Legend -->
+                <div class="alert-legend-card">
+                    <div class="card-header"><span class="card-title">Alert Definitions</span></div>
+                    <div class="legend-grid">
+                        <div class="legend-item">
+                            <span class="sev-badge sev-critical">Critical</span>
+                            <span>5+ failed logins from same account in 24 hours</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="sev-badge sev-high">High</span>
+                            <span>Login from 3+ different IPs within 1 hour</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="sev-badge sev-medium">Medium</span>
+                            <span>Login detected before 6 AM or after 10 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- TAB 4 ── TOP USERS / USER DRILL-DOWN                     -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <template if:true={isUsers}>
+            <div class="lg-content">
+
+                <template if:false={selectedUserId}>
+                    <div class="top-users-full">
+                        <div class="section-title-row">
+                            <h2 class="section-title">Most Active Users</h2>
+                            <p class="section-sub">Click any user to see their full login history</p>
+                        </div>
+                        <div class="lg-card">
+                            <template for:each={stats.topUsers} for:item="u">
+                                <div key={u.userId} class="user-drill-row" data-userid={u.userId}
+                                    onclick={handleUserDrill}>
+                                    <div class="udr-rank">{u.rank}</div>
+                                    <div class="udr-avatar">{u.initials}</div>
+                                    <div class="udr-info">
+                                        <div class="udr-name">{u.userName}</div>
+                                    </div>
+                                    <div class="udr-bar-wrap">
+                                        <div class="udr-bar" style={u.barStyle}></div>
+                                        <span class="udr-count">{u.count} logins</span>
+                                    </div>
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- User Drill-Down Panel -->
+                <template if:true={selectedUserId}>
+                    <div class="drill-panel">
+                        <div class="drill-header">
+                            <button class="back-btn" onclick={clearDrill}>
+                                <lightning-icon icon-name="utility:chevronleft" size="x-small"></lightning-icon>
+                                Back
+                            </button>
+                            <h2 class="drill-title">Login History — {selectedUserName}</h2>
+                        </div>
+                        <div class="lg-table-card">
+                            <template if:true={drillRecords.length}>
+                                <table class="lg-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Login Time</th>
+                                            <th>Login Type</th>
+                                            <th>IP Address</th>
+                                            <th>Browser</th>
+                                            <th>Platform</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={drillRecords} for:item="r">
+                                            <tr key={r.id} class="lg-row">
+                                                <td>
+                                                    <div class="time-primary">{r.loginDate}</div>
+                                                    <div class="time-secondary">{r.loginTimeStr}</div>
+                                                </td>
+                                                <td><span class="type-pill">{r.loginType}</span></td>
+                                                <td><code class="ip-mono">{r.sourceIp}</code></td>
+                                                <td>{r.browser}</td>
+                                                <td>{r.platform}</td>
+                                                <td><span class={r.statusClass}>{r.status}</span></td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- ── User Drill Modal (from any tab) ────────────────────── -->
+        <template if:true={showDrillModal}>
+            <div class="lg-modal-backdrop" onclick={closeDrillModal}>
+                <div class="lg-modal" onclick={stopProp}>
+                    <div class="modal-header">
+                        <div>
+                            <h3 class="modal-title">Login History</h3>
+                            <p class="modal-sub">{drillModalUser}</p>
+                        </div>
+                        <button class="modal-close" onclick={closeDrillModal}>✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <template if:true={drillRecords.length}>
+                            <table class="lg-table">
+                                <thead>
+                                    <tr>
+                                        <th>Login Time</th>
+                                        <th>Type</th>
+                                        <th>IP</th>
+                                        <th>Browser</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={drillRecords} for:item="r">
+                                        <tr key={r.id} class="lg-row">
+                                            <td>
+                                                <div class="time-primary">{r.loginDate}</div>
+                                                <div class="time-secondary">{r.loginTimeStr}</div>
+                                            </td>
+                                            <td><span class="type-pill">{r.loginType}</span></td>
+                                            <td><code class="ip-mono">{r.sourceIp}</code></td>
+                                            <td>{r.browser}</td>
+                                            <td><span class={r.statusClass}>{r.status}</span></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── Toast Notification ─────────────────────────────────── -->
+        <template if:true={showToast}>
+            <div class={toastClass}>
+                <lightning-icon icon-name={toastIcon} size="x-small"></lightning-icon>
+                <span>{toastMessage}</span>
+            </div>
+        </template>
+
+    </div>
+</template>
